@@ -9,36 +9,32 @@
 <body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col">
 
     <div id="app" class="flex-grow flex items-center justify-center p-4">
-        <!-- Contenu dynamique généré par JavaScript -->
+        <!-- Contenu dynamique -->
     </div>
 
     <script>
-        // --- BANQUE DE QUESTIONS (100 Items) ---
+        // --- BANQUE DE QUESTIONS RÉELLES (Extrait de QCM - Spécialité Exploitation) ---
         const bank = [
-            { q: "Quel est le rôle du HC dans une manœuvre de consignation ?", options: ["Réparer le câble", "Séparer et condamner l'ouvrage", "Mesurer la tension", "Remettre le courant"], correct: 1, justification: "L'habilitation HC autorise à séparer, condamner et vérifier l'absence de tension." },
-            { q: "Pourquoi tester les gants isolants à l'air ?", options: ["Pour les sécher", "Vérifier micro-perforations", "Confort", "Procédure inutile"], correct: 1, justification: "Le moindre trou annule l'isolation diélectrique." },
-            { q: "Qu'est-ce qu'un point chaud sur un IACM ?", options: ["Fuite SF6", "Résistance de contact élevée", "Tension élevée", "Rien"], correct: 1, justification: "Indique une dégradation des contacts par oxydation." },
-            { q: "Fonction disjoncteur HT ?", options: ["Coupure en charge et défaut", "Mesure", "Comptage", "Protection thermique"], correct: 0, justification: "Interruption des courants de court-circuit." },
-            { q: "Utilité du piquet d'équipotentialité ?", options: ["Isoler", "Lier les masses au même potentiel", "Augmenter résistance", "Rien"], correct: 1, justification: "Évite les différences de potentiel dangereuses." },
-            // (La base continue jusqu'à 100...)
+            { q: "Quelle est l'habilitation requise pour accomplir les opérations de consignation d'un ouvrage HT ?", options: ["H1", "H2", "HC", "H0"], correct: 2, justification: "L'habilitation HC (Chargé de Consignation) est la seule qui autorise à séparer, condamner et vérifier l'absence de tension sur un ouvrage." },
+            { q: "Un agent possédant uniquement l'habilitation 'HC' peut-il participer physiquement aux travaux de réparation ?", options: ["Oui, s'il a consigné", "Non, nécessite H1 ou H2", "Oui, avec autorisation", "Oui, avec gants isolants"], correct: 1, justification: "Les périmètres sont stricts. Le HC consigne, le H1 exécute, le H2 dirige les travaux." },
+            { q: "Qui est juridiquement responsable de la sécurité sur le chantier après l'AT ?", options: ["Chef de Consignation", "Dispatching", "Chef de Travaux", "Gardien"], correct: 2, justification: "Le Chef de Travaux (CDT) est responsable de l'exécution en sécurité une fois l'autorisation délivrée." },
+            { q: "Pourquoi tester les gants isolants à l'air avant usage ?", options: ["Pour les sécher", "Vérifier micro-perforations", "Confort", "Procédure inutile"], correct: 1, justification: "Le moindre micro-trou annule toute l'isolation diélectrique." },
+            { q: "Que faire lors du réarmement manuel d'un moteur de sectionneur ?", options: ["Être très fort", "Couper l'alimentation du moteur", "Mettre de l'huile", "Appeler le Dispatching"], correct: 1, justification: "Il faut toujours couper l'alimentation (disjoncteur du moteur) avant d'engager la manivelle pour éviter les bris de bras." },
+            { q: "En cas de phénomène de 'Tracking' sur les isolateurs (brouillard/pollution) ?", options: ["Nettoyer au chiffon", "Lavage sous tension ou mise hors tension", "Augmenter la tension", "Jeter du sable"], correct: 1, justification: "Le Dispatching organise un lavage des isolateurs sous tension ou met la ligne hors tension si le risque de flashover est imminent." },
+            { q: "Quel dispositif protège le transformateur contre les surcharges ?", options: ["Relais Buchholz", "Disjoncteur BT", "Éclateur", "Fusible HT"], correct: 1, justification: "Le disjoncteur BT ou le relais de protection assurent la protection thermique." },
+            { q: "Qu'est-ce qu'un point chaud sur un IACM ?", options: ["Fuite SF6", "Résistance de contact élevée", "Tension élevée", "Rien"], correct: 1, justification: "Indique une dégradation des contacts par oxydation." }
+            // Ajoutez ici les 92 questions restantes en suivant ce format
         ];
 
-        // Remplissage automatique pour simuler 100 questions si incomplet
+        // Remplissage temporaire pour éviter les erreurs de code si le tableau n'a pas 100 items
         const fullBank = [...bank, ...Array.from({ length: 100 - bank.length }, (_, i) => ({
-            q: `Question technique #${i + bank.length + 1}`,
-            options: ["Option technique A", "Option technique B", "Option technique C", "Option technique D"],
+            q: `Question technique #${i + bank.length + 1} (À venir)`,
+            options: ["Option A", "Option B", "Option C", "Option D"],
             correct: 0,
-            justification: "Remplacer par le contenu technique du document PDF."
+            justification: "Question en attente d'intégration."
         }))];
 
-        let state = {
-            view: 'home',
-            currQ: 0,
-            score: 0,
-            selOpt: null,
-            showCorrection: false,
-            candidat: ''
-        };
+        let state = { view: 'home', currQ: 0, score: 0, selOpt: null, showCorrection: false, candidat: '' };
 
         const render = () => {
             const app = document.getElementById('app');
@@ -48,7 +44,7 @@
                         <h1 class="text-3xl font-black mb-2 uppercase">SONELGAZ ELE MT</h1>
                         <p class="text-slate-500 mb-8 font-medium">Évaluation Technique - 100 Questions</p>
                         <input id="nameInput" class="w-full p-4 mb-4 bg-slate-100 rounded-xl border-2" placeholder="Nom du candidat" value="${state.candidat}">
-                        <button onclick="startQuiz()" class="w-full bg-blue-600 py-4 rounded-xl font-bold text-white hover:bg-blue-500 transition">Démarrer</button>
+                        <button onclick="startQuiz()" class="w-full bg-blue-600 py-4 rounded-xl font-bold text-white hover:bg-blue-500 transition">Démarrer le Test</button>
                     </div>`;
             } else {
                 const q = fullBank[state.currQ];
@@ -76,12 +72,7 @@
             }
         };
 
-        window.startQuiz = () => {
-            state.candidat = document.getElementById('nameInput').value;
-            state.view = 'quiz';
-            render();
-        };
-
+        window.startQuiz = () => { state.candidat = document.getElementById('nameInput').value; state.view = 'quiz'; render(); };
         window.select = (i) => { if (!state.showCorrection) { state.selOpt = i; render(); } };
         window.next = () => {
             if (state.showCorrection) {
@@ -92,7 +83,6 @@
         };
         window.prev = () => { if (state.currQ > 0) { state.currQ--; state.selOpt = null; state.showCorrection = false; render(); } };
         window.quit = () => { state.view = 'home'; render(); };
-
         render();
     </script>
 </body>
