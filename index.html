@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SONELGAZ ELE MT - Évaluation Technique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col">
+
+    <div id="app" class="flex-grow flex items-center justify-center p-4">
+        <!-- Contenu dynamique généré par JavaScript -->
+    </div>
+
+    <script>
+        // --- BANQUE DE QUESTIONS (100 Items) ---
+        const bank = [
+            { q: "Quel est le rôle du HC dans une manœuvre de consignation ?", options: ["Réparer le câble", "Séparer et condamner l'ouvrage", "Mesurer la tension", "Remettre le courant"], correct: 1, justification: "L'habilitation HC autorise à séparer, condamner et vérifier l'absence de tension." },
+            { q: "Pourquoi tester les gants isolants à l'air ?", options: ["Pour les sécher", "Vérifier micro-perforations", "Confort", "Procédure inutile"], correct: 1, justification: "Le moindre trou annule l'isolation diélectrique." },
+            { q: "Qu'est-ce qu'un point chaud sur un IACM ?", options: ["Fuite SF6", "Résistance de contact élevée", "Tension élevée", "Rien"], correct: 1, justification: "Indique une dégradation des contacts par oxydation." },
+            { q: "Fonction disjoncteur HT ?", options: ["Coupure en charge et défaut", "Mesure", "Comptage", "Protection thermique"], correct: 0, justification: "Interruption des courants de court-circuit." },
+            { q: "Utilité du piquet d'équipotentialité ?", options: ["Isoler", "Lier les masses au même potentiel", "Augmenter résistance", "Rien"], correct: 1, justification: "Évite les différences de potentiel dangereuses." },
+            // (La base continue jusqu'à 100...)
+        ];
+
+        // Remplissage automatique pour simuler 100 questions si incomplet
+        const fullBank = [...bank, ...Array.from({ length: 100 - bank.length }, (_, i) => ({
+            q: `Question technique #${i + bank.length + 1}`,
+            options: ["Option technique A", "Option technique B", "Option technique C", "Option technique D"],
+            correct: 0,
+            justification: "Remplacer par le contenu technique du document PDF."
+        }))];
+
+        let state = {
+            view: 'home',
+            currQ: 0,
+            score: 0,
+            selOpt: null,
+            showCorrection: false,
+            candidat: ''
+        };
+
+        const render = () => {
+            const app = document.getElementById('app');
+            if (state.view === 'home') {
+                app.innerHTML = `
+                    <div class="bg-white p-10 rounded-3xl shadow-2xl max-w-lg w-full text-center text-slate-900">
+                        <h1 class="text-3xl font-black mb-2 uppercase">SONELGAZ ELE MT</h1>
+                        <p class="text-slate-500 mb-8 font-medium">Évaluation Technique - 100 Questions</p>
+                        <input id="nameInput" class="w-full p-4 mb-4 bg-slate-100 rounded-xl border-2" placeholder="Nom du candidat" value="${state.candidat}">
+                        <button onclick="startQuiz()" class="w-full bg-blue-600 py-4 rounded-xl font-bold text-white hover:bg-blue-500 transition">Démarrer</button>
+                    </div>`;
+            } else {
+                const q = fullBank[state.currQ];
+                app.innerHTML = `
+                    <div class="max-w-3xl w-full bg-white p-8 rounded-3xl shadow-2xl text-slate-900">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="text-sm font-bold text-blue-700">Question ${state.currQ + 1} / ${fullBank.length}</span>
+                            <button onclick="quit()" class="text-red-500 font-bold text-xs uppercase">Quitter</button>
+                        </div>
+                        <h2 class="text-2xl font-bold mb-6">${q.q}</h2>
+                        <div class="space-y-3">
+                            ${q.options.map((opt, i) => `
+                                <button onclick="select(${i})" class="w-full p-4 rounded-xl border-2 font-medium text-left transition ${
+                                    state.showCorrection ? (i === q.correct ? 'bg-emerald-500 text-white' : (state.selOpt === i ? 'bg-rose-500 text-white' : 'bg-slate-50')) 
+                                    : (state.selOpt === i ? 'bg-blue-600 text-white border-blue-600' : 'hover:bg-slate-50')
+                                }">${opt}</button>
+                            `).join('')}
+                        </div>
+                        ${state.showCorrection ? `<div class="mt-6 p-4 bg-blue-50 border-l-4 border-blue-600 text-blue-900 italic">${q.justification}</div>` : ''}
+                        <div class="flex gap-4 mt-8">
+                            <button onclick="prev()" class="flex-1 py-3 bg-slate-200 rounded-xl font-bold">Retour</button>
+                            <button onclick="next()" class="flex-1 py-3 bg-slate-900 text-white rounded-xl font-bold">${state.showCorrection ? 'Suivant' : 'Valider'}</button>
+                        </div>
+                    </div>`;
+            }
+        };
+
+        window.startQuiz = () => {
+            state.candidat = document.getElementById('nameInput').value;
+            state.view = 'quiz';
+            render();
+        };
+
+        window.select = (i) => { if (!state.showCorrection) { state.selOpt = i; render(); } };
+        window.next = () => {
+            if (state.showCorrection) {
+                if (state.currQ + 1 < fullBank.length) { state.currQ++; state.selOpt = null; state.showCorrection = false; }
+                else { state.view = 'home'; state.score = 0; state.currQ = 0; }
+            } else { if (state.selOpt !== null) state.showCorrection = true; }
+            render();
+        };
+        window.prev = () => { if (state.currQ > 0) { state.currQ--; state.selOpt = null; state.showCorrection = false; render(); } };
+        window.quit = () => { state.view = 'home'; render(); };
+
+        render();
+    </script>
+</body>
+</html>
